@@ -1,4 +1,4 @@
-package utils.beans.anylyzers.secure;
+package utils.beans.analyzer.secure;
 
 /**
  * Secure agent for check access to field

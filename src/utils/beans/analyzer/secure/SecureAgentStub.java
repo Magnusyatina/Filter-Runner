@@ -1,4 +1,4 @@
-package utils.beans.anylyzers.secure;
+package utils.beans.analyzer.secure;
 
 public class SecureAgentStub implements SecureAgent{
 

@@ -2,9 +2,9 @@ import filters.FilterExecutor;
 import filters.Operator;
 import filters.expressions.Expression;
 import filters.expressions.ExpressionManagerImpl;
-import utils.beans.anylyzers.BeanAnalyzer;
-import utils.beans.anylyzers.BeanAnalyzerImpl;
-import utils.beans.anylyzers.secure.SecureAgentStub;
+import utils.beans.analyzer.BeanAnalyzer;
+import utils.beans.analyzer.BeanAnalyzerImpl;
+import utils.beans.analyzer.secure.SecureAgentStub;
 import utils.beans.extractors.SimpleValueExtractorImpl;
 
 import java.text.ParseException;

@@ -1,6 +1,6 @@
-package utils.beans.anylyzers;
+package utils.beans.analyzer;
 
-import utils.beans.anylyzers.secure.SecureAgent;
+import utils.beans.analyzer.secure.SecureAgent;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;

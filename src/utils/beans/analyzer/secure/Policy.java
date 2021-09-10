@@ -1,4 +1,4 @@
-package utils.beans.anylyzers.secure;
+package utils.beans.analyzer.secure;
 
 /**
  * Field Policy, declares interface for implementations

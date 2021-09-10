@@ -1,4 +1,4 @@
-package utils.beans.anylyzers.secure;
+package utils.beans.analyzer.secure;
 
 import java.util.LinkedList;
 import java.util.List;

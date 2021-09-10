@@ -1,6 +1,6 @@
 package utils.beans.extractors;
 
-import utils.beans.anylyzers.BeanAnalyzer;
+import utils.beans.analyzer.BeanAnalyzer;
 
 /**
  * Provides interface for obtaining object data
