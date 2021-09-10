@@ -29,4 +29,24 @@ public class ExpressionInExecutor extends ExpressionExecutor {
         }
         return false;
     }
+
+    public boolean handle(Collection<?> beans, Collection<?> collection) {
+        if (collection == null || collection.isEmpty())
+            return false;
+        for(Object bean : beans) {
+            if(handle(bean, collection))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean handle(Object[] beans, Object[] array) {
+        if (array == null || array.length == 0)
+            return false;
+        for(Object bean : beans) {
+            if(handle(bean, array))
+                return true;
+        }
+        return false;
+    }
 }

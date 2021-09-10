@@ -178,7 +178,7 @@ public class AbstractVisitorViewer<R, T> implements Handler<R, T> {
         for (int i = 0; i < parameterTypes.length; i++) {
             if (i >= params.length)
                 return false;
-            if (parameterTypes[i] == Object[].class)
+            if (parameterTypes[i] == Object[].class && params[i].getClass() == Object[].class)
                 continue;
             if (!parameterTypes[i].isAssignableFrom(params[i].getClass()))
                 return false;

@@ -1,11 +1,14 @@
 package filters.expressions;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import filters.IOperator;
+import filters.SimpleOperator;
 
 public class Expression {
 
     private String fieldPath;
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = SimpleOperator.class)
     private IOperator operator;
 
     private Object value;

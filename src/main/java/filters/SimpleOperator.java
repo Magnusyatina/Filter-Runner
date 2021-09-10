@@ -1,4 +1,4 @@
-package filters.expressions;
+package filters;
 
 import filters.IOperator;
 
