@@ -12,6 +12,8 @@ public interface ValueExtractor {
      */
     void setBeanAnalyzer(BeanAnalyzer beanAnalyzer);
 
+    BeanAnalyzer getBeanAnalyzer();
+
     /**
      * @param inRoot citizen object to explore
      * @param field  incoming property from json

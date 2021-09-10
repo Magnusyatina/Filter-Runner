@@ -22,6 +22,11 @@ public class SimpleValueExtractorImpl implements ValueExtractor {
     }
 
     @Override
+    public BeanAnalyzer getBeanAnalyzer() {
+        return beanAnalyzer;
+    }
+
+    @Override
     public Object getValue(Object inRoot, String fieldPath) {
         if (beanAnalyzer == null)
             return null;

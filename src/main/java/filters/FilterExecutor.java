@@ -7,12 +7,9 @@ import filters.expressions.executors.ExpressionExecutor;
 import handlers.AbstractVisitorViewer;
 import utils.beans.extractors.ValueExtractor;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class FilterExecutor extends AbstractVisitorViewer {
+public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
 
     private final ValueExtractor valueExtractor;
 
@@ -22,12 +19,18 @@ public class FilterExecutor extends AbstractVisitorViewer {
 
     private List<Expression> expressions;
 
+    private boolean recursiveFilter = false;
 
-    public FilterExecutor(ValueExtractor valueExtractor, ExpressionManager expressionManager, List<Object> beans) {
+    public FilterExecutor(ValueExtractor valueExtractor, ExpressionManager expressionManager, List<Object> beans, boolean recursiveFilter) {
         super(null, true);
         this.valueExtractor = valueExtractor;
         this.expressionManager = expressionManager;
         this.beans = beans;
+        this.recursiveFilter = recursiveFilter;
+    }
+
+    public FilterExecutor(ValueExtractor valueExtractor, ExpressionManager expressionManager, List<Object> beans) {
+        this(valueExtractor, expressionManager, beans, false);
     }
 
     public List<Object> filter(List<Expression> expressions) {
@@ -49,29 +52,30 @@ public class FilterExecutor extends AbstractVisitorViewer {
     }
 
     public boolean isValid(Object bean, Expression expression) {
-        String[] fieldNames = expression.getFieldPath().split("\\.");
-        String fieldPath = "";
-        Object root = bean;
-        for (String fieldName : fieldNames) {
-            fieldPath += "\\." + fieldName;
-            root = valueExtractor.getValue(root, fieldName);
-            root = handle(root, expression);
-        }
+        LinkedList<String> fieldNames = new LinkedList<>(Arrays.asList(expression.getFieldPath().split("\\.")));
+        return isValid(bean, fieldNames.removeFirst(), fieldNames, expression);
+    }
+
+    public boolean isValid(Object bean, String fieldName, LinkedList<String> path, Expression expression) {
+        valueExtractor.getBeanAnalyzer().registerMethod(bean.getClass(), fieldName);
+        bean = valueExtractor.getValue(bean, fieldName);
+        return handle(bean, path, expression);
+    }
+
+    public Boolean handle(Collection collection, Expression expression) {
+        throw new NotSupportedFieldTypeException();
+    }
+
+    public Boolean handle(Map map, Expression expression) {
+        throw new NotSupportedFieldTypeException();
+    }
+
+    public Boolean handle(Object bean, LinkedList<String> path, Expression expression) {
+        if(!path.isEmpty())
+            return isValid(bean, path.removeFirst(), path, expression);
         ExpressionExecutor expressionExecutor = expressionManager.getExpressionExecutor(expression.getOperator());
         if (expressionExecutor == null)
             return false;
-        return expressionExecutor.handle(root, expression.getValue());
-    }
-
-    public void handle(Collection collection, Expression expression) {
-        throw new NotSupportedFieldTypeException();
-    }
-
-    public void handle(Map map, Expression expression) {
-        throw new NotSupportedFieldTypeException();
-    }
-
-    public Object handle(Object bean, Expression expression) {
-        return bean;
+        return expressionExecutor.handle(bean, expression.getValue());
     }
 }
