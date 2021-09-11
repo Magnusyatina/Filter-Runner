@@ -105,7 +105,7 @@ public class MainTest {
                 .next()
                 .fieldPath("mark.endDate")
                 .operator(Operator.LESS_THAN)
-                .value(simpleDateFormat.parse("2022-01-01"))
+                .value(simpleDateFormat.parse("2025-01-01"))
                 .next()
                 .fieldPath("mark.startDate")
                 .operator(Operator.BIGGER_THAN)
@@ -113,7 +113,7 @@ public class MainTest {
                 .build();
         Random random = new Random();
         List<Discipline> disciplines = new LinkedList<>();
-        int disciplinesLength = 10000;
+        int disciplinesLength = 100000;
         for(int i = 0; i < disciplinesLength; i++) {
             Discipline discipline = new Discipline();
             Mark mark = new Mark(i % 6, simpleDateFormat.format(new Date()), simpleDateFormat.format(new Date()));

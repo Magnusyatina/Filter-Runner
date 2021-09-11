@@ -1,5 +1,7 @@
 package utils.beans.extractors;
 
+import filters.annotations.Represent;
+import filters.converters.Converter;
 import utils.beans.analyzer.BeanAnalyzer;
 
 /**
@@ -20,4 +22,6 @@ public interface ValueExtractor {
      * @return String value
      */
     Object getValue(Object inRoot, String field);
+
+    Object getValue(Object bean, String fieldName, Represent represent);
 }

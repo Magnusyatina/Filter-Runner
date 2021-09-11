@@ -1,6 +1,5 @@
 package filters.expressions.executors;
 
-import filters.converters.ValueTypeConverter;
 import filters.expressions.ExpressionManager;
 
 import java.util.Date;
@@ -24,11 +23,6 @@ public class ExpressionGreaterExecutor extends ExpressionExecutor {
     }
 
     public boolean handle(Object leftValue, Object rightValue) {
-        ValueTypeConverter valueTypeConverter = expressionManager.getValueTypeConverter();
-        leftValue = valueTypeConverter.handle(leftValue);
-        rightValue = valueTypeConverter.handle(rightValue);
-        if (leftValue != null && rightValue != null)
-            return super.handle(leftValue, rightValue);
         return false;
     }
 

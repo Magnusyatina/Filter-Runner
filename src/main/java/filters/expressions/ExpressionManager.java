@@ -1,7 +1,6 @@
 package filters.expressions;
 
 import filters.IOperator;
-import filters.converters.ValueTypeConverter;
 import filters.expressions.executors.ExpressionExecutor;
 
 import java.util.Map;
@@ -14,5 +13,4 @@ public interface ExpressionManager {
 
     void addExpressionExecutor(IOperator operator, ExpressionExecutor expressionExecutor);
 
-    ValueTypeConverter getValueTypeConverter();
 }

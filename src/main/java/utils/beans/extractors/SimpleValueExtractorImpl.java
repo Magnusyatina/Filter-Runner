@@ -1,5 +1,7 @@
 package utils.beans.extractors;
 
+import filters.annotations.Represent;
+import filters.converters.Converter;
 import utils.beans.analyzer.BeanAnalyzer;
 
 import java.lang.reflect.InvocationTargetException;
@@ -53,4 +55,17 @@ public class SimpleValueExtractorImpl implements ValueExtractor {
         return null;
     }
 
+    @Override
+    public Object getValue(Object bean, String fieldName, Represent represent) {
+        Object value = getValue(bean, fieldName);
+        try {
+            Converter converter = represent.using().newInstance();
+            return converter.convert(represent, value);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -1,33 +1,21 @@
 package filters.converters;
 
-import handlers.Handler;
+import filters.annotations.Represent;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateConverter extends ValueTypeConverter {
+public class DateConverter extends Converter<Date, Object> {
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-HH-dd");
-
-    public DateConverter(SimpleDateFormat simpleDateFormat) {
-        this(null, simpleDateFormat);
-    }
-
-    public DateConverter(Handler subHandler, SimpleDateFormat simpleDateFormat) {
-        super(subHandler);
-        this.simpleDateFormat = simpleDateFormat;
-    }
-
-    public DateConverter(Handler subHandler) {
-        super(subHandler);
-    }
-
-    public Object handle(Object value) {
+    @Override
+    public Date convert(Represent represent, Object object) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(represent.pattern());
         try {
-            return value instanceof Date ? value : simpleDateFormat.parse(String.valueOf(value));
+            return simpleDateFormat.parse(String.valueOf(object));
         } catch (ParseException exception) {
-            return defaultHandle(value);
+            exception.printStackTrace();
         }
+        return null;
     }
 }

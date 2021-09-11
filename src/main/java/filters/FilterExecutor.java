@@ -1,5 +1,6 @@
 package filters;
 
+import filters.annotations.Represent;
 import filters.errors.NotSupportedFieldTypeException;
 import filters.expressions.Expression;
 import filters.expressions.ExpressionManager;
@@ -7,7 +8,9 @@ import filters.expressions.executors.ExpressionExecutor;
 import handlers.AbstractVisitorViewer;
 import utils.beans.extractors.ValueExtractor;
 
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
 
@@ -19,7 +22,11 @@ public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
 
     private List<Expression> expressions;
 
+    private ExecutorService executor = Executors.newFixedThreadPool(8);
+
     private boolean recursiveFilter = false;
+
+    private Map<Class<?>, Map<String, Represent>> represents = new HashMap<>();
 
     public FilterExecutor(ValueExtractor valueExtractor, ExpressionManager expressionManager, List<Object> beans, boolean recursiveFilter) {
         super(null, true);
@@ -33,13 +40,31 @@ public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
         this(valueExtractor, expressionManager, beans, false);
     }
 
-    public List<Object> filter(List<Expression> expressions) {
+    public List<Object> filter(final List<Expression> expressions) {
         this.expressions = expressions;
         registerMethods(expressions);
-        List<Object> filteredBeans = new LinkedList<>();
-        for (Object bean : beans) {
+        final List<Object> filteredBeans = new LinkedList<>();
+        List<Future> submits = new LinkedList<>();
+        for (final Object bean : beans) {
             if (isValid(bean, expressions))
                 filteredBeans.add(bean);
+//            Future<?> submit = executor.submit(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (isValid(bean, expressions))
+//                        filteredBeans.add(bean);
+//                }
+//            });
+//            submits.add(submit);
+//        }
+//        for(Future submit : submits) {
+//            try {
+//                submit.get();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            } catch (ExecutionException e) {
+//                e.printStackTrace();
+//            }
         }
         return filteredBeans;
     }
@@ -65,8 +90,40 @@ public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
     }
 
     public boolean isValid(Object bean, String fieldName, LinkedList<String> path, Expression expression) {
-        bean = valueExtractor.getValue(bean, fieldName);
+        Represent annotation = findAnnotation(bean, fieldName);
+        if(annotation != null)
+            bean = valueExtractor.getValue(bean, fieldName, annotation);
+        else bean = valueExtractor.getValue(bean, fieldName);
         return handle(bean, path, expression);
+    }
+
+    public Represent findAnnotation(Object bean, String fieldName) {
+        Class<?> beanClass = bean.getClass();
+        Map<String, Represent> fieldRepresents = represents.get(beanClass);
+        if(fieldRepresents == null)
+            return findAnnotation(beanClass, fieldName);
+        Represent represent = fieldRepresents.get(fieldName);
+        if(represent == null)
+            return findAnnotation(beanClass, fieldName);
+        return represent;
+    }
+
+    public Represent findAnnotation(Class<?> beanClass, String fieldName) {
+        try {
+            Field declaredField = beanClass.getDeclaredField(fieldName);
+            if(!declaredField.isAnnotationPresent(Represent.class))
+                return null;
+            Represent annotation = declaredField.getAnnotation(Represent.class);
+            Map<String, Represent> annotations = represents.get(beanClass);
+            if(annotations == null) {
+                annotations = new HashMap<>();
+                represents.put(beanClass, annotations);
+            }
+            annotations.put(fieldName, annotation);
+            return annotation;
+        } catch (NoSuchFieldException e) {
+        }
+        return null;
     }
 
     public Boolean handle(Collection collection, Expression expression) {

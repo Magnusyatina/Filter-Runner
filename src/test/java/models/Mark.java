@@ -1,11 +1,16 @@
 package models;
 
+import filters.annotations.Represent;
+import filters.converters.DateConverter;
+
 public class Mark {
 
     private double mark;
 
+    @Represent(using = DateConverter.class, pattern = "yyyy-MM-dd")
     private String startDate;
 
+    @Represent(using = DateConverter.class, pattern = "yyyy-MM-dd")
     private String endDate;
 
 
