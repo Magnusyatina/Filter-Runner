@@ -12,18 +12,6 @@ public class ValueTypeConverter extends AbstractVisitorViewer {
         super(subHandler, true);
     }
 
-    private Set<Object[]> handlingParams = new HashSet<>();
-
-    @Override
-    public Object handle(Object... params) {
-        if(handlingParams.contains(params))
-            return defaultHandle(params);
-        handlingParams.add(params);
-        Object result = super.handle(params);
-        handlingParams.remove(params);
-        return result;
-    }
-
     @Override
     protected Object defaultHandle(Object... params) {
         String constraintKey = getConstraintKey(params);
