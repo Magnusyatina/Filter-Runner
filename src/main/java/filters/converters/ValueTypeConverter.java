@@ -3,9 +3,6 @@ package filters.converters;
 import handlers.AbstractVisitorViewer;
 import handlers.Handler;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class ValueTypeConverter extends AbstractVisitorViewer {
 
     public ValueTypeConverter(Handler subHandler) {
@@ -13,10 +10,12 @@ public class ValueTypeConverter extends AbstractVisitorViewer {
     }
 
     @Override
-    protected Object defaultHandle(Object... params) {
-        String constraintKey = getConstraintKey(params);
-        if(!defaultHandles.contains(constraintKey))
-            defaultHandles.add(constraintKey);
-        return super.defaultHandle(params);
+    public Object handle(Object... params) {
+        try {
+            return super.handle(params);
+        } catch (Exception exception) {
+            return super.defaultHandle(params);
+        }
     }
+
 }
