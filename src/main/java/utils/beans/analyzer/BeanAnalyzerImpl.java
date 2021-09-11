@@ -18,6 +18,8 @@ public class BeanAnalyzerImpl implements BeanAnalyzer {
 
     private Map<String, Method> methods = new HashMap<>();
 
+    private Map<Class<?>, Map<String, Method>> classMethods = new HashMap<>();
+
 
     public BeanAnalyzerImpl() {
     }
@@ -60,19 +62,24 @@ public class BeanAnalyzerImpl implements BeanAnalyzer {
 
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                     if (propertyDescriptor.getName().equals(elems[elemIndex])) {
-                        methods.put(key, propertyDescriptor.getReadMethod());
+                        Method readMethod = propertyDescriptor.getReadMethod();
+                        methods.put(key, readMethod);
+                        Map<String, Method> classMethods = this.classMethods.get(key);
+                        if(classMethods == null) {
+                            classMethods = new HashMap<>();
+                            this.classMethods.put(path, classMethods);
+                        }
+                        classMethods.put(elems[elemIndex], readMethod);
 
                         Class<?> propertyType = propertyDescriptor.getPropertyType();
                         if (Collection.class.isAssignableFrom(propertyType)) {
                             //if Collection
-                            path = (Class<?>) ((ParameterizedType) propertyDescriptor
-                                    .getReadMethod()
+                            path = (Class<?>) ((ParameterizedType) readMethod
                                     .getGenericReturnType())
                                     .getActualTypeArguments()[0];
                         } else if (Map.class.isAssignableFrom(propertyType)) {
                             //if Map
-                            path = (Class<?>) ((ParameterizedType) propertyDescriptor
-                                    .getReadMethod()
+                            path = (Class<?>) ((ParameterizedType) readMethod
                                     .getGenericReturnType())
                                     .getActualTypeArguments()[1];
                         } else {
@@ -105,6 +112,17 @@ public class BeanAnalyzerImpl implements BeanAnalyzer {
         if (method != null)
             return method;
         registerMethod(root, field);
+        return methods.get(field);
+    }
+
+    @Override
+    public Method getMethodByClass(Class<?> bean, String field) {
+        if(secureAgent == null)
+            return null;
+
+        Map<String, Method> methods = classMethods.get(bean);
+        if(methods == null)
+            return null;
         return methods.get(field);
     }
 

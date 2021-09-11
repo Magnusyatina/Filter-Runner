@@ -36,7 +36,7 @@ public class SimpleValueExtractorImpl implements ValueExtractor {
 
         for (int elemIndex = 0; elemIndex < elem.length; elemIndex++) {
             String currentFieldPath = elem[elemIndex];
-            Method method = beanAnalyzer.getMethod(inRoot.getClass(), currentFieldPath);
+            Method method = beanAnalyzer.getMethodByClass(inRoot.getClass(), currentFieldPath);
             if (method != null) {
                 try {
                     root = method.invoke(root);

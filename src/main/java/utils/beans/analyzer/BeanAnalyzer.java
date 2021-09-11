@@ -48,4 +48,6 @@ public interface BeanAnalyzer {
     Method getMethod(Class<?> root, String field);
 
     Map<String, Method> getMethods();
+
+    Method getMethodByClass(Class<?> bean, String field);
 }

@@ -152,7 +152,7 @@ public class AbstractVisitorViewer<R, T> implements Handler<R, T> {
             Method method = extractMethod(params);
             method.setAccessible(true);
             methodList.put(constraintKey, method);
-            method.invoke(this, params);
+            return (R) method.invoke(this, params);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException exception) {
             defaultHandles.add(constraintKey);
         }

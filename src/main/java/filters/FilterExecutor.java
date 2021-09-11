@@ -35,12 +35,20 @@ public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
 
     public List<Object> filter(List<Expression> expressions) {
         this.expressions = expressions;
+        registerMethods(expressions);
         List<Object> filteredBeans = new LinkedList<>();
         for (Object bean : beans) {
             if (isValid(bean, expressions))
                 filteredBeans.add(bean);
         }
         return filteredBeans;
+    }
+
+    private void registerMethods(List<Expression> expressions) {
+        Class beanClass = beans.get(0).getClass();
+        for(Expression expression : expressions) {
+            valueExtractor.getBeanAnalyzer().registerMethod(beanClass, expression.getFieldPath());
+        }
     }
 
     public boolean isValid(Object bean, List<Expression> expressions) {
@@ -57,7 +65,6 @@ public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
     }
 
     public boolean isValid(Object bean, String fieldName, LinkedList<String> path, Expression expression) {
-        valueExtractor.getBeanAnalyzer().registerMethod(bean.getClass(), fieldName);
         bean = valueExtractor.getValue(bean, fieldName);
         return handle(bean, path, expression);
     }

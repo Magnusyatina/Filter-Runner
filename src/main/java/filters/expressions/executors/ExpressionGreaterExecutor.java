@@ -19,6 +19,10 @@ public class ExpressionGreaterExecutor extends ExpressionExecutor {
         return leftValue > rightValue;
     }
 
+    public boolean handle(Double leftValue, Double rightValue) {
+        return leftValue > rightValue;
+    }
+
     public boolean handle(Object leftValue, Object rightValue) {
         ValueTypeConverter valueTypeConverter = expressionManager.getValueTypeConverter();
         leftValue = valueTypeConverter.handle(leftValue);

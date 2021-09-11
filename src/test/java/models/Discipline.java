@@ -4,6 +4,9 @@ public class Discipline {
 
     private Mark mark;
 
+    public Discipline() {
+    }
+
     public Discipline(Mark mark) {
         this.mark = mark;
     }
