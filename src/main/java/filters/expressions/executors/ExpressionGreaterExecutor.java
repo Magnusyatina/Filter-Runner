@@ -28,7 +28,7 @@ public class ExpressionGreaterExecutor extends ExpressionExecutor {
         leftValue = valueTypeConverter.handle(leftValue);
         rightValue = valueTypeConverter.handle(rightValue);
         if (leftValue != null && rightValue != null)
-            return handle(leftValue, rightValue);
+            return super.handle(leftValue, rightValue);
         return false;
     }
 

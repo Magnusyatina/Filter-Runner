@@ -18,17 +18,17 @@ public class AbstractVisitorViewer<R, T> implements Handler<R, T> {
     /**
      * a value map that associates the type of an object with a method that processes the object
      */
-    private Map<String, Method> methodList = new HashMap<>();
+    protected Map<String, Method> methodList = new HashMap<>();
     /**
      * a set containing all types of objects that should be processed by the standard handler
      */
-    private Set<String> defaultHandles = new HashSet<>();
+    protected Set<String> defaultHandles = new HashSet<>();
     /**
      * sublayer whose method will be called if no method is found to process the current object in the current layer
      */
-    private Handler<R, T> subHandler;
+    protected Handler<R, T> subHandler;
 
-    private boolean invocationSuitable = false;
+    protected boolean invocationSuitable = false;
 
     /**
      * Method to get facade sub handler
@@ -138,7 +138,7 @@ public class AbstractVisitorViewer<R, T> implements Handler<R, T> {
      * @param objects from which the constraint key is built
      * @return constraint key
      */
-    private String getConstraintKey(T... objects) {
+    protected String getConstraintKey(T... objects) {
         StringBuilder constraintKey = new StringBuilder("");
         for (T object : objects) {
             constraintKey.append(object.getClass().getCanonicalName());

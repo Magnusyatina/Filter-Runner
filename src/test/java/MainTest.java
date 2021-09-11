@@ -102,17 +102,21 @@ public class MainTest {
                 .fieldPath("mark.mark")
                 .operator(Operator.LESS_THAN)
                 .value(5.1)
+                .next()
+                .fieldPath("mark.endDate")
+                .operator(Operator.LESS_THAN)
+                .value(simpleDateFormat.parse("2022-01-01"))
+                .next()
+                .fieldPath("mark.startDate")
+                .operator(Operator.BIGGER_THAN)
+                .value(simpleDateFormat.parse("1970-01-01"))
                 .build();
-//                .fieldPath("mark.endDate")
-//                .operator(Operator.LESS_THAN)
-//                .value(simpleDateFormat.parse("2022-01-01"))
-//                .build();
         Random random = new Random();
         List<Discipline> disciplines = new LinkedList<>();
-        int disciplinesLength = 1000000;
+        int disciplinesLength = 10000;
         for(int i = 0; i < disciplinesLength; i++) {
             Discipline discipline = new Discipline();
-            Mark mark = new Mark(i % 6, simpleDateFormat.format(new Date(random.nextLong())), simpleDateFormat.format(new Date(random.nextLong())));
+            Mark mark = new Mark(i % 6, simpleDateFormat.format(new Date()), simpleDateFormat.format(new Date()));
             discipline.setMark(mark);
             disciplines.add(discipline);
         }

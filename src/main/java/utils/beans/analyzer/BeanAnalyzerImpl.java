@@ -64,7 +64,7 @@ public class BeanAnalyzerImpl implements BeanAnalyzer {
                     if (propertyDescriptor.getName().equals(elems[elemIndex])) {
                         Method readMethod = propertyDescriptor.getReadMethod();
                         methods.put(key, readMethod);
-                        Map<String, Method> classMethods = this.classMethods.get(key);
+                        Map<String, Method> classMethods = this.classMethods.get(path);
                         if(classMethods == null) {
                             classMethods = new HashMap<>();
                             this.classMethods.put(path, classMethods);
