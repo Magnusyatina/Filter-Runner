@@ -1,6 +1,7 @@
 package filters;
 
 import filters.annotations.Represent;
+import filters.converters.Converter;
 import filters.errors.NotSupportedFieldTypeException;
 import filters.expressions.Expression;
 import filters.expressions.ExpressionManager;
@@ -21,8 +22,6 @@ public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
     private final List<Object> beans;
 
     private List<Expression> expressions;
-
-    private ExecutorService executor = Executors.newFixedThreadPool(8);
 
     private boolean recursiveFilter = false;
 
@@ -48,23 +47,6 @@ public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
         for (final Object bean : beans) {
             if (isValid(bean, expressions))
                 filteredBeans.add(bean);
-//            Future<?> submit = executor.submit(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (isValid(bean, expressions))
-//                        filteredBeans.add(bean);
-//                }
-//            });
-//            submits.add(submit);
-//        }
-//        for(Future submit : submits) {
-//            try {
-//                submit.get();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            }
         }
         return filteredBeans;
     }
@@ -91,8 +73,16 @@ public class FilterExecutor extends AbstractVisitorViewer<Boolean, Object> {
 
     public boolean isValid(Object bean, String fieldName, LinkedList<String> path, Expression expression) {
         Represent annotation = findAnnotation(bean, fieldName);
-        if(annotation != null)
-            bean = valueExtractor.getValue(bean, fieldName, annotation);
+        if(annotation != null) {
+            try {
+                Converter converter = annotation.using().newInstance();
+                bean = valueExtractor.getValue(bean, fieldName, annotation);
+                if(bean.getClass() != expression.getValue().getClass())
+                    expression.setValue(converter.convert(annotation, expression.getValue()));
+            } catch (InstantiationException | IllegalAccessException e) {
+                return false;
+            }
+        }
         else bean = valueExtractor.getValue(bean, fieldName);
         return handle(bean, path, expression);
     }
