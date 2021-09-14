@@ -14,7 +14,6 @@ import utils.beans.extractors.SimpleValueExtractorImpl;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -113,10 +112,10 @@ public class MainTest {
                 .build();
         Random random = new Random();
         List<Discipline> disciplines = new LinkedList<>();
-        int disciplinesLength = 100000;
+        int disciplinesLength = 1000000;
         for(int i = 0; i < disciplinesLength; i++) {
             Discipline discipline = new Discipline();
-            Mark mark = new Mark(i % 6, simpleDateFormat.format(new Date()), simpleDateFormat.format(new Date()));
+            Mark mark = new Mark(i % 6, "1971-01-01", "2024-01-01");
             discipline.setMark(mark);
             disciplines.add(discipline);
         }
